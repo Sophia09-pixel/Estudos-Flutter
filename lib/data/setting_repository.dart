@@ -16,22 +16,12 @@ class SettingsRepository {
 
   /// Adiciona um time à lista de recentes
   Future<void> addRecentTime(Time time) async {
-    final recentList = await getRecentTimes();
+  // Só guarda o último selecionado
+  final recentList = [time];
 
-    // Remove duplicado se já existir
-    recentList.removeWhere((t) => t.id == time.id);
-
-    // Adiciona no início da fila
-    recentList.insert(0, time);
-
-    // Limita a 3 últimos
-    if (recentList.length > 3) {
-      recentList.removeLast();
-    }
-
-    final jsonList = recentList.map((t) => t.toJson()).toList();
-    await _prefs.setString(_keyRecentTimes, jsonEncode(jsonList));
-  }
+  final jsonList = recentList.map((t) => t.toJson()).toList();
+  await _prefs.setString(_keyRecentTimes, jsonEncode(jsonList));
+}
 
   /// Recupera a lista de recentes
   Future<List<Time>> getRecentTimes() async {
